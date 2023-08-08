@@ -16,7 +16,7 @@ const router = express.Router();
 
 
 
-router.get('/',userCrontroller.getAllUsers)
+router.get('/',verifyToken,authorizePermissions('user'),userCrontroller.getAllUsers)
 router.get('/:id', userCrontroller.getOneUserById)
 
 // Add the prefix to all routes

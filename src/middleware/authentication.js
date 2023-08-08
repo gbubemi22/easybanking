@@ -9,7 +9,7 @@ export const authenticateUser = async (req, res, next) => {
     throw new UnauthenticatedError('Authentication Invalid');
   }
 
-  try {
+  try {authenticateUser
     const {  id, type } = isTokenValid({ token });
     req.user = {  id, type };
     next();
@@ -17,17 +17,13 @@ export const authenticateUser = async (req, res, next) => {
     throw new UnauthenticatedError('Authentication Invalid');
   }
 };
-
-export const authorizePermissions = (...allowedAccountTypes) => {
+export const authorizePermissions = (...type) => {
   return (req, res, next) => {
-    const userAccountType = req.user.type;
-
-    if (!allowedAccountTypes.includes(userAccountType)) {
-      throw new UnauthorizedError(
+    if (!type.includes(req.user.type)) {
+      throw new CustomError.UnauthorizedError(
         'Unauthorized to access this route'
       );
     }
-
     next();
   };
 };

@@ -1,26 +1,27 @@
 import jwt  from 'jsonwebtoken'
 import { StatusCodes }  from 'http-status-codes'
 import  constant  from '../constant/index.js'
-
+import UnauthorizedError from '../errors/unauthorized.js'
 
 
 
 export const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+  
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const token = authHeader.substring(7);
-      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: "Invalid token" });
-      } else {
-        req.user = decoded;
-        next();
-      }
-    });
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      next(new UnauthorizedError("Invalid token"));
+    }
   } else {
-    return res.status(401).json({ message: "Token not provided" });
+    next(new UnauthorizedError("Token not provided"));
   }
 };
+
 
 
 export const verifyTokenAndAuthorization = (req, res, next) => {
