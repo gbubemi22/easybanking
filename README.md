@@ -3,43 +3,89 @@ EASYBANKING TRANSACTION WITH
 MongoDB ACID transactions
 Node.js/Express
 
+This project demonstrates a banking system with MongoDB ACID transactions implemented using Node.js and Express. Follow the steps below to set up and explore the endpoints.
+Getting Started
 
+    Clone the repository.
+    Install the dependencies: npm install
+    Start the server: npm run dev
+    The server will be running on port 9000.
 
-clone the repository
+Endpoints
+Create Users and Admin
 
-install the dependencies: npm install
-start the server with npm run dev 
-on port 9000
+Endpoint: POST /api/v1/auth/register (for users)
 
+Request Body:
 
-end points:
+json
 
-CREATE USERS AND ADMIN
+{
+  "first_name": "Oritsegbubemi",
+  "last_name" : "John",
+  "email": "test22@gmail.com",
+  "password": "Webnet137@",
+  "phone_number": "07030762738"
+}
 
-localhost:9000/api/v1/auth/register  for users
+Endpoint: POST /api/v1/auth/register/admin (for admin)
 
-localhost:9000/api/v1/auth/register/admin for admin
+Request Body:
 
+{
+  "first_name": "Bemiho",
+  "last_name" : "Mark",
+  "email": "test@yahoo.com",
+  "password": "Webnet137@",
+  "phone_number": "08111631084"
+}
 
-localhost:9000/api/v1/auth/login  for users and admin 
+User and Admin Login
 
+Endpoint: POST /api/v1/auth/login
 
-localhost:9000/api/v1/users get users
+Request Body:
 
-localhost:9000/api/v1/users/id get one user
+json
 
+{
+  "email": "test22@gmail.com",
+  "password": "Webnet137@"
+}
 
+Get Users
 
-create wallet 
+Endpoint: GET /api/v1/users
+Get User by ID
 
+Endpoint: GET /api/v1/users/:id
+Create Wallet
 
+Endpoint: POST /api/v1/wallets
 
+Request Body:
 
+json
 
+{
+    "account_number": "8111631084"
+}
 
+Transfer Funds
 
+Endpoint: POST /api/v1/transactions/transfer
 
+Request Body:
 
+json
 
+{
+  "fromaccount_number": "8111631084",
+  "toaccount_number": "7030762738",
+  "amount": "1000",
+  "summary": "buy beans and bread"
+}
 
- 
+Refresh Token
+
+Endpoint: POST /api/v1/auth/refresh-token

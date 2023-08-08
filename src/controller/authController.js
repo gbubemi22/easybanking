@@ -160,10 +160,10 @@ const authController = {
       const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
       // Fetch the user based on the decoded token
-      const user = await userRepository.getUserById(decodedToken.id);
+      const user = await userRepository.getUserByID(decodedToken.id);
 
       
-      const newRefreshToken = generateRefreshToken(user);
+      const newRefreshToken = authController.generateRefreshToken(user);
 
       res.status(StatusCodes.OK).json({ refreshToken: newRefreshToken });
    

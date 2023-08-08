@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/register', authController.register);
 router.post('/register/admin', authController.registerAdmin);
 router.post('/login', authController.login);
+router.post('/refresh-token', authController.updateRefreshToken);
 
 // Add the prefix to all routes
 const prefix = '/api/v1/auth';
