@@ -1,11 +1,11 @@
 import jwt  from 'jsonwebtoken'
 import { StatusCodes }  from 'http-status-codes'
-import { ACCOUNT_TYPES }  from '../important';
+import  constant  from '../constant/index.js'
 
 
 
 
-const verifyToken = async (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const token = authHeader.substring(7);
@@ -23,9 +23,9 @@ const verifyToken = async (req, res, next) => {
 };
 
 
-const verifyTokenAndAuthorization = (req, res, next) => {
+export const verifyTokenAndAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.accountType === ACCOUNT_TYPES.ADMIN || req.user.id === req.params.id) {
+    if (req.user.type === constant.ACCOUNT_TYPES.USER || req.user.id === req.params.id) {
       next();
     } else {
       res.status(StatusCodes.FORBIDDEN).json("You are not allowed to perform this action!");
@@ -33,9 +33,9 @@ const verifyTokenAndAuthorization = (req, res, next) => {
   });
 };
 
-const verifyTokenAndAdmin = (req, res, next) => {
+export const verifyTokenAndAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.accountType === ACCOUNT_TYPES.ADMIN) {
+    if (req.user.type === constant.ACCOUNT_TYPES.ADMIN) {
       next();
     } else {
       res.status(StatusCodes.FORBIDDEN).json("You are not allowed to perform this action!");

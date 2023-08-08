@@ -1,28 +1,29 @@
-import CustomError  from'../errors';
-import { isTokenValid } from '../utils';
+import UnauthenticatedError from '../errors/unauthenticated.js';
+import UnauthorizedError from '../errors/unauthorized.js'
+import { isTokenValid } from '../utils/isTokenvalid.js';
 
-const authenticateUser = async (req, res, next) => {
+export const authenticateUser = async (req, res, next) => {
   const token = req.signedCookies.token;
 
   if (!token) {
-    throw new CustomError.UnauthenticatedError('Authentication Invalid');
+    throw new UnauthenticatedError('Authentication Invalid');
   }
 
   try {
-    const {  userId, type } = isTokenValid({ token });
-    req.user = {  userId, type };
+    const {  id, type } = isTokenValid({ token });
+    req.user = {  id, type };
     next();
   } catch (error) {
-    throw new CustomError.UnauthenticatedError('Authentication Invalid');
+    throw new UnauthenticatedError('Authentication Invalid');
   }
 };
 
-const authorizePermissions = (...allowedAccountTypes) => {
+export const authorizePermissions = (...allowedAccountTypes) => {
   return (req, res, next) => {
     const userAccountType = req.user.type;
 
     if (!allowedAccountTypes.includes(userAccountType)) {
-      throw new CustomError.UnauthorizedError(
+      throw new UnauthorizedError(
         'Unauthorized to access this route'
       );
     }
@@ -31,7 +32,6 @@ const authorizePermissions = (...allowedAccountTypes) => {
   };
 };
 
-export default   {
-  authenticateUser,
-  authorizePermissions,
-};
+
+  
+

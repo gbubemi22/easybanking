@@ -3,6 +3,7 @@ import ConflictError from "../errors/conflict.js";
 import { validatePasswordString } from '../utils/password.js'
 import userRepository from '../respository/userRespositroy.js'
 import jwt from 'jsonwebtoken';
+import  constant  from '../constant/index.js'
 
 const authController = {
 
@@ -59,9 +60,55 @@ const authController = {
   },
 
 
+  registerAdmin: async (req, res) => {
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      phone_number,
+      account_number,
+      type
+    } = req.body;
+
+
+    validatePasswordString(password);
+
+    try {
+      const check = await userRepository.getUserByEmail(email);
+
+      if (check) {
+        throw new ConflictError(`email already in use`);
+      }
+      if (check && check.phone_number) {
+        throw new ConflictError(`phone number already in use`);
+      }
+      const account_number = authController.phone_numberToAccountNumber(phone_number);
+     let  type = constant.ACCOUNT_TYPES.ADMIN
+      const user = await userRepository.createUser(
+        first_name,
+        last_name,
+        email,
+        password,
+        phone_number,
+        account_number,
+        type
+      );
+      const token = user.generateJWT();
+
+      res.status(StatusCodes.CREATED).json({ user, token });
+    } catch (error) {
+      console.error("Error registering user:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Registration failed" });
+    }
+  },
+
+
   generateAccessToken:function (user){
     // Create an access token with a short expiration time
-    const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
+    const accessToken = jwt.sign({ id: user._id, type: user.type }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: '15m', // Access token expires in 15 minutes
     });
     return accessToken;
@@ -69,7 +116,7 @@ const authController = {
   
    generateRefreshToken:function(user) {
     // Create a refresh token with a longer expiration time
-    const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, {
+    const refreshToken = jwt.sign({ id: user._id , type: user.type}, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: '7d', // Refresh token expires in 7 days
     });
     return refreshToken;
@@ -91,8 +138,8 @@ const authController = {
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid email or password' });
     }
 
-    const accessToken = await authController.generateAccessToken(user);
-    const refreshToken = await authController.generateRefreshToken(user);
+    const accessToken = authController.generateAccessToken(user);
+    const refreshToken = authController.generateRefreshToken(user);
 
     res.status(StatusCodes.OK).json({ user, accessToken, refreshToken });
     

@@ -8,7 +8,8 @@ const userRepository = {
     email,
     password,
     phone_number,
-    account_number
+    account_number,
+    type
   ) => {
     
       const createdUser = await User.create({
@@ -18,6 +19,7 @@ const userRepository = {
         password,
         phone_number,
         account_number,
+        type
       });
       return createdUser;
    
@@ -32,13 +34,19 @@ const userRepository = {
     return user;
   },
 
-  getuserByID: async (id) => {
-    const user = await User.findOne(id);
-    if (!user) {
-      throw new NotFoundError(`User not found `);
-    }
-    return user;
-  },
+
+getUserByID: async (id) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new NotFoundError(`User not found`);
+  }
+  return user;
+},
+
+  getAllUsers: async () => {
+     return User.find({});
+  }
+  
 };
 
 export default userRepository;

@@ -1,9 +1,9 @@
-import CustomAPIError  from './custom-api'
-import UnauthenticatedError from'./unauthenticated';
-import NotFoundError from'./not-found';
-import BadRequestError from'./bad-request';
-import UnauthorizedError from'./unauthorized';
-import ConflictError  from'./conflict';
+import CustomAPIError  from './custom-api.js'
+import UnauthenticatedError from'./unauthenticated.js';
+import NotFoundError from'./not-found.js';
+import BadRequestError from'./bad-request.js';
+import UnauthorizedError from'./unauthorized.js';
+import ConflictError  from'./conflict.js';
 
 export default   {
   CustomAPIError,

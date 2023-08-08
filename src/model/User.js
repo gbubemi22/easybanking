@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import  ACCOUNT_TYPES  from '../constant/index.js'
+import  constant  from '../constant/index.js'
 
 
 const UserSchema = new mongoose.Schema({
@@ -43,8 +43,8 @@ const UserSchema = new mongoose.Schema({
 
         type: {
           type: String,
-          enum: Object.values(ACCOUNT_TYPES),
-          default: ACCOUNT_TYPES.USER,
+          enum: Object.values(constant.ACCOUNT_TYPES),
+          default: constant.ACCOUNT_TYPES.USER,
         },
 
         account_number: {
