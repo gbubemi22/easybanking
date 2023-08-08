@@ -18,7 +18,7 @@ const wallectController = {
         const userAccountNumber = user.account_number;
     
         const wallet = await walletRepository.createWallet(userAccountNumber, id);
-    
+        
         res.status(StatusCodes.CREATED).json(wallet);
       }
         

@@ -9,22 +9,22 @@ const transfer = async (req, res) => {
      const session = await mongoose.startSession();
      session.startTransaction()
      try {
-         const { toUsername, fromUsername, amount, summary, tranxType} = req.body;
+         const { toaccount_number, fromaccount_number, amount, summary, tranxType} = req.body;
          const reference =  uuidv4();
-         if (!toUsername && !fromUsername && !amount && !summary && !tranxType) {
+         if (!toaccount_number && !fromaccount_number && !amount && !summary && !tranxType) {
              return res.status(StatusCodes.BAD_REQUEST).json({
                  status: false,
-                 message: 'Please provide the following details: toUsername, fromUsername, amount, summary, tranxType'
+                 message: 'Please provide the following details: toaccount_number, fromaccount_number, amount, summary, tranxType'
              })
          }
  
        const transferResult = await Promise.all([
          debitAccount(
-           {amount, username:fromUsername, purpose:"payment", reference, summary, tranxType: "CR",
-           trnxSummary: `TRFR TO: ${toUsername}. TRNX REF:${reference} `, session}),
+           {amount, account_number:fromaccount_number, purpose:"payment", reference, summary, tranxType: "CR",
+           trnxSummary: `TRFR TO: ${toaccount_number}. TRNX REF:${reference} `, session}),
          creditAccount(
-           {amount, username:toUsername, purpose:"payment", reference, summary,
-           tranxType: "DR", trnxSummary:`TRFR FROM: ${fromUsername}. TRNX REF:${reference} `, session})
+           {amount, account_number:toaccount_number, purpose:"payment", reference, summary,
+           tranxType: "DR", trnxSummary:`TRFR FROM: ${fromaccount_number}. TRNX REF:${reference} `, session})
        ]);
  
        const failedTxns = transferResult.filter((result) => result.status !== true);

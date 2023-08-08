@@ -16,24 +16,24 @@ import Transactions  from "../model/Transaction.js";
 
 
 
-export const creditAccount = async ({ amount, username, purpose, reference, summary, trnxSummary, session }) => {
-     const wallet = await Wallets.findOne({ username: username })
+export const creditAccount = async ({ amount, account_number, purpose, reference, summary, trnxSummary, session }) => {
+     const wallet = await Wallets.findOne({ account_number: account_number })
      if (!wallet) {
           return {
                status: false,
                statusCode: StatusCodes.NOT_FOUND,
-               message: `User ${username} doesn\'t exist`
+               message: `User ${account_number} doesn\'t exist`
           }
      };
 
 
-     const updatedWallet = await Wallets.findOneAndUpdate({ username }, { $inc: { balance: amount } }, { session });
+     const updatedWallet = await Wallets.findOneAndUpdate({ account_number }, { $inc: { balance: amount } }, { session });
 
      const transaction = await Transactions.create([{
           trnxType: 'CR',
           purpose,
           amount,
-          username,
+          account_number,
           reference,
           balanceBefore: Number(wallet.balance),
           balanceAfter: Number(wallet.balance) + Number(amount),
@@ -56,13 +56,13 @@ export const creditAccount = async ({ amount, username, purpose, reference, summ
 };
 
 
-export const debitAccount = async ({ amount, username, purpose, reference, summary, trnxSummary, session }) => {
-     const wallet = await Wallets.findOne({ username });
+export const debitAccount = async ({ amount, account_number, purpose, reference, summary, trnxSummary, session }) => {
+     const wallet = await Wallets.findOne({ account_number });
      if (!wallet) {
           return {
                status: false,
                statusCode: StatusCodes.NOT_FOUND,
-               message: `User ${username} doesn\'t exist`
+               message: `User ${account_number} doesn\'t exist`
           }
      };
 
@@ -70,16 +70,16 @@ export const debitAccount = async ({ amount, username, purpose, reference, summa
           return {
                status: false,
                statusCode: StatusCodes.BAD_REQUEST,
-               message: `User ${username} has insufficient balance`
+               message: `User ${account_number} has insufficient balance`
           }
      }
 
-     const updatedWallet = await Wallets.findOneAndUpdate({ username }, { $inc: { balance: -amount } }, { session });
+     const updatedWallet = await Wallets.findOneAndUpdate({ account_number }, { $inc: { balance: -amount } }, { session });
      const transaction = await Transactions.create([{
           trnxType: 'DR',
           purpose,
           amount,
-          username,
+          account_number,
           reference,
           balanceBefore: Number(wallet.balance),
           balanceAfter: Number(wallet.balance) - Number(amount),

@@ -8,7 +8,7 @@ const walletRepository = {
           account_number,
           id,
      ) => {
-          const wallet = await Wallet({
+          const wallet = await Wallet.create({
                account_number: account_number,
                id: id,
           })
